@@ -6,20 +6,27 @@ import pandas as pd
 import statsmodels.api as sm
 import sys
 
-fn_csv = 'cimis-daily-5-139.csv'
-df = pd.read_csv(fn_csv)
-df = df[['Avg Air Temp (F)', 'Avg Rel Hum (%)', 'Precip (in)']].dropna()
+def analyze_csv(fn_csv):
+    df = pd.read_csv(fn_csv)
+    df = df[['Avg Air Temp (F)', 'Avg Rel Hum (%)', 'Precip (in)']].dropna()
 
-print(df.head())
-temp = df['Avg Air Temp (F)']
-humid = df['Avg Rel Hum (%)']
-rain = df['Precip (in)']
+    temp = df['Avg Air Temp (F)']
+    humid = df['Avg Rel Hum (%)']
+    rain = df['Precip (in)']
 
-temp_fit = sm.OLS(rain, sm.add_constant(temp)).fit()
-humid_fit = sm.OLS(rain, sm.add_constant(humid)).fit()
+    temp_fit = sm.OLS(rain, sm.add_constant(temp)).fit()
+    humid_fit = sm.OLS(rain, sm.add_constant(humid)).fit()
 
-print("\n___ Temperature and Rain fit ___", temp_fit.summary())
-print("\n___ Humidity and Rain fit ___", humid_fit.summary())
+    print("\n___ Temperature and Rain fit ___", temp_fit.summary())
+    print("\n___ Humidity and Rain fit ___", humid_fit.summary())
 
-print(f"\nR-value for fit rain:\t tempurature={temp_fit.rsquared:.5f}"
-      f" \t humidity={humid_fit.rsquared:.5f}")
+    print(f"\nR-value for fit rain:\t tempurature={temp_fit.rsquared:.5f}"
+            f" \t humidity={humid_fit.rsquared:.5f}")
+
+
+if __name__ == "__main__":
+    argv = sys.argv
+    if len(argv) <= 1:
+        exit("Usage: {argv[0]}  csv_files ...")
+    for fn in argv[1:]:
+        analyze_csv(fn)
