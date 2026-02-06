@@ -8,10 +8,19 @@ import sys
 
 def analyze_csv(fn_csv):
     df = pd.read_csv(fn_csv)
-    df = df[['Avg Air Temp (F)', 'Avg Rel Hum (%)', 'Precip (in)']].dropna()
+    try:
+        df = df[['Air Temp (F)', 'Rel Hum (%)', 'Precip (in)']].dropna()
+    except:
+        df = df[['Avg Air Temp (F)', 'Avg Rel Hum (%)', 'Precip (in)']].dropna()
 
-    temp = df['Avg Air Temp (F)']
-    humid = df['Avg Rel Hum (%)']
+    try:
+        temp = df['Air Temp (F)']
+    except:
+        temp = df['Avg Air Temp (F)']
+    try:
+        humid = df['Rel Hum (%)']
+    except:
+        humid = df['Avg Rel Hum (%)']
     rain = df['Precip (in)']
 
     temp_fit = sm.OLS(rain, sm.add_constant(temp)).fit()
